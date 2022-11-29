@@ -104,7 +104,7 @@ class ArticleController extends AbstractController
 
   }
 
-/**
+   /**
    * @Route("/titres", name="showArticles")
    */
   public function getAllArticles(EntityManagerInterface $entityManager){
@@ -159,15 +159,35 @@ class ArticleController extends AbstractController
       ]);
   }
 
-  /**
- * @Route("/article/{id}/voter", name="article_vote", methods="POST")
- */
- public function articleVote(Article $article, Request $request)
- {
-  $direction = $request->request->get('direction');
-// afficher l'article et le contenu de a requête
- dd($article, $request->request->all());
-}
+ // ajouter une fonction de vote POST ONLY
+      /**
+      * @Route("/article/{id}/voter", name="article_vote", methods="POST")
+      */
+      public function articleVote(Article $article, Request $request,EntityManagerInterface $entityManager)
+      {
+        // afficher l'article et le contenu de a requête
+          //dd($article, $request->request->all());
+
+          // récupérer la valeur de la direction via l'objet request
+          $direction = $request->request->get('direction');
+
+          if ($direction === 'up') {
+            //  $article->setVotes($article->getVotes() + 1);
+            $article->upVote();
+          } elseif ($direction === 'down') {
+            //  $article->setVotes($article->getVotes() - 1);
+            $article->downVote();
+          }
+          $entityManager->flush();
+
+          // return $this->render('article/afficher.html.twig', [
+          //     'article' => $article,
+          // ]);
+          return $this->redirectToRoute('afficher', [
+              'id' => $article->getId()
+          ]);
+      }
+
 
   // vote pour un article, retour en JSON pour une fonction ajax
    /**
@@ -185,5 +205,32 @@ class ArticleController extends AbstractController
   }
 
 
+  /**
+   * @Route("article/create", name="article_create")
+   */
+  public function add(Request $request) 
+  {
+    $article = new Article();
+    $form = $this->createForm(ArticleType::class, $article);
+    $form->handleRequest($request);
 
+    if ($form->isSubmitted() && $form->isValid()) {
+      $article->setDateCreation(new DateTime());
+      // $form->getData() holds the submitted values
+      // but, the original `$task` variable has also been updated
+      $article = $form->getData();
+
+      // ... perform some action, such as saving the task to the database
+      // for example, if Task is a Doctrine entity, save it!
+      $entityManager = $this->getDoctrine()->getManager();
+      $entityManager->persist($article);
+      $entityManager->flush();
+
+      return $this->redirectToRoute('afficher_article', [
+          'id' => $article->getId()
+      ]);
+
+    }
+    return $this->render('article/add.html.twig', ['form' =>$form->createView()]);
+  }
 }
