@@ -216,12 +216,7 @@ class ArticleController extends AbstractController
 
     if ($form->isSubmitted() && $form->isValid()) {
       $article->setDateCreation(new DateTime());
-      // $form->getData() holds the submitted values
-      // but, the original `$task` variable has also been updated
       $article = $form->getData();
-
-      // ... perform some action, such as saving the task to the database
-      // for example, if Task is a Doctrine entity, save it!
       $entityManager = $this->getDoctrine()->getManager();
       $entityManager->persist($article);
       $entityManager->flush();
