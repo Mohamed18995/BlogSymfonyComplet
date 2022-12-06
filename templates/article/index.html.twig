@@ -9,34 +9,12 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello ! ✅</h1>
+    <h1>Hello {{ controller_name }}! ✅</h1>
 
-    <h2>Tableau : longueur {{ tableau|length }}</h2>
- <ul>
- {% for val in tableau %}
- <li>{{ val }}</li>
- {% endfor %}
- </ul>
- <h2>Valeur aléatoire de mon tableau</h2>
- {{ random(tableau) }}
- <h2>le plus grand nombre est :</h2>
-    {{max(tableau)}} 
-    <h2>le premier nombre :</h2>
-    {{(tableau[0])}}  
+    This friendly message is coming from:
+    <ul>
+        <li>Your controller at <code><a href="{{ 'C:/symfony/exame/src/Controller/ArticleController.php'|file_link(0) }}">src/Controller/ArticleController.php</a></code></li>
+        <li>Your template at <code><a href="{{ 'C:/symfony/exame/templates/article/index.html.twig'|file_link(0) }}">templates/article/index.html.twig</a></code></li>
+    </ul>
 </div>
-<h2>Utilisation du javascript</h2>
-    <div class="d-flex justify-content-center">
-        <div class="vote-arrows flex-fill pt-2 js-vote-arrows" style="min-width: 90px;">
-            <a class="vote-up" href="#" data-direction="up"><i class="far fa-arrow-alt-circle-up"></i></a>
-            <a class="vote-down" href="#" data-direction="down"><i class="far fa-arrow-alt-circle-down"></i></a>
-            <span>+ <span class="js-vote-total">6</span></span>
-        </div>
-    </div>
-
 {% endblock %}
-{% block javascripts %}
-{# ne pas overrider le script parent #}
-  {{ parent() }}
-  <script src="{{ asset('js/vote.js') }}"></script>
-{% endblock %}
-
