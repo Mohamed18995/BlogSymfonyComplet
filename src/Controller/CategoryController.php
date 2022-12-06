@@ -2,17 +2,37 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CategoryController extends AbstractController
 {
-    #[Route('/category', name: 'app_category')]
-    public function index(): Response
+
+    //afficher des categ
+    #[Route('/category', name: 'category')]
+    public function index(EntityManagerInterface $entityManager): Response
     {
+
+      $categories = $entityManager->getRepository(Category::class)->findAll();
+
+
         return $this->render('category/index.html.twig', [
-            'controller_name' => 'CategoryController',
+            'categories' => $categories,
         ]);
+    }
+
+   //affichage une categ
+
+  /**
+    * @Route("/category/{id}", name="afficher_category")
+    */
+    public function afficher(Category $category) : Response
+    {
+      return $this->render('category/show.html.twig', [
+       'category' => $category,
+       ]);
     }
 }
